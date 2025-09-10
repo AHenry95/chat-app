@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 const Chat = ({ route, navigation}) => {
     const [messages, setMessages] = useState([]);
@@ -25,14 +25,37 @@ const Chat = ({ route, navigation}) => {
                     name: 'React Native',
                     avatar: 'https://placeimg.com/140/140/any'
                 }
+            },
+            {
+                _id: 2,
+                text: name + ' has entered the chat',
+                createdAt: new Date(),
+                system: true,
             }
         ]);
     }, []);
+
+    const renderBubble = (props) => {
+        return (
+            <Bubble 
+                {...props}
+                wrapperStyle={{
+                    right: {
+                        backgroundColor: '#000'
+                    },
+                    left: {
+                        backgroundColor: '#FFF'
+                    }
+                }}
+            />
+        )
+    };
 
     return (
         <View style={[styles.container, { backgroundColor: backgroundColor }]}>
             <GiftedChat
                 messages={messages}
+                renderBubble={renderBubble}
                 onSend={messages => onSend(messages)}
                 user={{
                     _id: 1
@@ -48,9 +71,7 @@ const Chat = ({ route, navigation}) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        flex: 1
     }
 });
 
