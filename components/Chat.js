@@ -15,24 +15,26 @@ const Chat = ({ route, navigation}) => {
     }, []);
 
     useEffect(() => {
-        setMessages([
-            {
-                _id: 1,
-                text: 'Hello developer',
-                createdAt: new Date(),
-                user: {
+        setTimeout(() => {
+            setMessages([
+                {
+                    _id: 1,
+                    text: 'Hello developer',
+                    createdAt: new Date(),
+                    user: {
+                        _id: 2,
+                        name: 'React Native',
+                        avatar: 'https://placeimg.com/140/140/any'
+                    }
+                },
+                {
                     _id: 2,
-                    name: 'React Native',
-                    avatar: 'https://placeimg.com/140/140/any'
+                    text: name + ' has entered the chat',
+                    createdAt: new Date(),
+                    system: true,
                 }
-            },
-            {
-                _id: 2,
-                text: name + ' has entered the chat',
-                createdAt: new Date(),
-                system: true,
-            }
-        ]);
+            ]);
+        }, 100);
     }, []);
 
     const renderBubble = (props) => {
@@ -61,7 +63,7 @@ const Chat = ({ route, navigation}) => {
                     _id: 1
                 }}
             />
-            { Platform.OS === 'android'
+            { Platform.OS === 'android' 
                 ? <KeyboardAvoidingView behavior="height" />
                 : null
             }
