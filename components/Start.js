@@ -2,14 +2,28 @@ import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 import { getAuth, signInAnonymously } from 'firebase/auth';
 
+/**
+ * Start Component - Initial screen where users enter their name, 
+ * choose background color, and authenticate before entering the chat
+ * 
+ * @param {Object} navigation - Navigation object for screen transitions
+ */
+
 const Start = ({ navigation }) => {
+    // State variables for username and Chat Component background color 
     const [name, setName] = useState('');
     const [selectedColor, setSelectedColor] = useState();
 
+    // Array of available background color options
     const colorOptions = ['#090C08', '#474056', '#8A95A5', '#B9C6AE'];
  
+    // Get Firebase authentication instance
     const auth = getAuth();
 
+    /**
+    * Handles user authentication using Firebase Anonymous Auth
+    * and navigates to the Chat screen upon success
+    */
     const signInUser = () => {
         signInAnonymously(auth)
             .then(result => {
@@ -25,12 +39,15 @@ const Start = ({ navigation }) => {
             })
     };
 
+    /**
+    * Hides the navigation header for a cleaner start screen appearance
+    */
     useEffect(() => {
         navigation.setOptions({ headerShown:  false })
     }, []);
 
     return (
-        <ImageBackground 
+        <ImageBackground
             source={require("../assets/Background_Image.png")}
             style={styles.backgroundImage}
             resizeMode="cover"

@@ -8,11 +8,16 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, disableNetwork, enableNetwork } from 'firebase/firestore';
 import { useNetInfo } from '@react-native-community/netinfo';
 
-
+// Create a stack navigator for handling screen navigation 
 const Stack = createNativeStackNavigator();
 
+/**
+ * Main App component that handles Firebase initialization, 
+ * network monitoring, and navigation setup
+ */
 const App = () => {
   
+  // Firebase configuration object containing project-specific settings
   const firebaseConfig = {
     apiKey: "AIzaSyDrHFr-mxPp7OcbM-g99GYTNu0RSNVpou0",
     authDomain: "chatapp-498b5.firebaseapp.com",
@@ -29,8 +34,10 @@ const App = () => {
   // Initialize Cloud Firestore and get a reference to the service
   const db = getFirestore(app);
 
+  // Hook to monitor network connectivity status
   const connectionStatus = useNetInfo();
 
+  // Hook to handle network connectivity changes, runs whenever connectionStatus value changes
   useEffect(() => {
     if(connectionStatus.isConnected === false) {
       Alert.alert('Connection lost!');
@@ -40,6 +47,7 @@ const App = () => {
     }
   }, [connectionStatus.isConnected]);
 
+  // Render NavigationContainer, which wraps the entire app and enables navigation
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Start">
