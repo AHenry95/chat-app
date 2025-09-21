@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
+import MapView from 'react-native-maps';
 import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomActions from './CustomActions';
 
 /**
  * Chat screen where users can send and receive messages
@@ -13,7 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  * @param {boolean} isConnected - Network connection status 
  */
 
-const Chat = ({ route, navigation, db, isConnected }) => {
+const Chat = ({ route, navigation, db, isConnected, storage }) => {
     // State to hold all chat messages
     const [messages, setMessages] = useState([]);
 
@@ -52,7 +54,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
                 docs.forEach(doc => {
                     newMessages.push({ 
                         _id: doc.id, 
-                        ... doc.data( ),
+                        ... doc.data(),
                         createdAt: new Date(doc.data().createdAt.toMillis())
                     })
                 });
@@ -123,6 +125,37 @@ const Chat = ({ route, navigation, db, isConnected }) => {
         else return null;
     };
 
+    const renderCustomActions = (props) => {
+        return <CustomActions 
+            storage={storage}
+            userID={userID}
+            onSend={onSend}
+            {...props} />;
+    }
+
+    const renderCustomView = (props) => {
+        const {currentMessage} = props;
+        if (currentMessage.location) {
+            return (
+                <MapView
+                    style={{
+                        width: 150,
+                        height: 100,
+                        borderRadius: 13,
+                        margin: 3
+                    }}
+                    region={{
+                        latitude: currentMessage.location.latitude,
+                        longitude: currentMessage.location.longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421
+                    }}
+                />
+            );
+        }
+        return null;
+    }
+
     return (
         <View style={[styles.container, { backgroundColor: backgroundColor }]}>
             <GiftedChat
@@ -130,6 +163,8 @@ const Chat = ({ route, navigation, db, isConnected }) => {
                 renderBubble={renderBubble}
                 renderInputToolbar={renderInputToolbar}
                 onSend={messages => onSend(messages)}
+                renderActions={renderCustomActions}
+                renderCustomView={renderCustomView}
                 user={{
                     _id: userID,
                     name: name
